@@ -10,7 +10,7 @@ define('clientSecret', 'be8613e9ab8a45b8a68a028b4b693cd2');
 define('redirectURI', 'http://localhost/michaelapi/index.php');
 define('ImageDirectory', 'pics/');
 
-if isset(($_GET['code'])) {
+if (isset($_GET['code'])) {
 	$code = ($_GET['code']);
 	$url = 'https://api.instagram.com/oauth/access_token';
 	$access_token_settings = array('client_id' => clientID,
@@ -19,6 +19,7 @@ if isset(($_GET['code'])) {
 		'redirect_uri' => redirectURI,
 		'code' => $code
 		);
+// cURL is what we use in PHP, it's a library calls to other API's
 }
 
 ?>
