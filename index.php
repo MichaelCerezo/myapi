@@ -14,17 +14,23 @@ define('ImageDirectory', 'pics/');
 function connectToInstagram($url){
 	$ch = curl_init();
 
-	curl_setopt_array($ch, array[
-		CURLOPT_URL => $url;
-		CURLOPT_RETURNTRANSFER => true;
-		CURLOPT_SSL_VERIFYPEER => false;
-		CURLOPT_SSL_VERIFYPOST => 2;
-	]);
+	curl_setopt_array($ch, array(
+		CURLOPT_URL => $url,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_SSL_VERIFYPEER => false,
+		CURLOPT_SSL_VERIFYHOST => 2,
+	));
 	$result = curl_exec($ch);
 	curl_close($ch);
 	return $result;
+}
+// function to get userID cause userNAME doesn't allow us to get pictures!
+function getUserID($userNAME){
+	$url = 'https://api.instagram.com/cl/users/search?q='.$userName.'&client_id='.clientID;
+	$instagramInfo = connectToInstagram($url);
+	$results = json_decode($instagramInfo, true);
 
-
+	echo $results['data']['0']['id'];
 }
 
 if (isset($_GET['code'])) {
@@ -46,8 +52,8 @@ curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // but in live work-productio
 $result = curl_exec($curl);
 curl_close();
 
-$result = json_decode($reslt, true);
-echo $result['user']['username'];
+$results = json_decode($result, true);
+getUserID($results['user']['username']);
 }
 else{
 ?>
