@@ -10,6 +10,23 @@ define('clientSecret', 'be8613e9ab8a45b8a68a028b4b693cd2');
 define('redirectURI', 'http://localhost/michaelapi/index.php');
 define('ImageDirectory', 'pics/');
 
+// function that is going to connect to Instagram
+function connectToInstagram($url){
+	$ch = curl_init();
+
+	curl_setopt_array($ch, array[
+		CURLOPT_URL => $url;
+		CURLOPT_RETURNTRANSFER => true;
+		CURLOPT_SSL_VERIFYPEER => false;
+		CURLOPT_SSL_VERIFYPOST => 2;
+	]);
+	$result = curl_exec($ch);
+	curl_close($ch);
+	return $result;
+
+
+}
+
 if (isset($_GET['code'])) {
 	$code = ($_GET['code']);
 	$url = 'https://api.instagram.com/oauth/access_token';
