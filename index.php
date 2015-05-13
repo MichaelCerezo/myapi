@@ -25,13 +25,25 @@ function connectToInstagram($url){
 	return $result;
 }
 // function to get userID cause userNAME doesn't allow us to get pictures!
-function getUserID($userNAME){
+function getUserID($userName){
 	$url = 'https://api.instagram.com/cl/users/search?q='.$userName.'&client_id='.clientID;
 	$instagramInfo = connectToInstagram($url);
 	$results = json_decode($instagramInfo, true);
 
 	echo $results['data']['0']['id'];
 }
+// function to print out images onto screen
+function printImages($userID){
+	$url = 'https://api.instagram.com/v1/users/'.$userID.'/media/recent?client_id='.clientID.'&count=5';
+	$instagramInfo = connectToInstagram($url);
+	$results = json_decode($instagramInfo, true);
+	// parse throughthe information one by one
+	foreach ($results['data'] as $items){
+		$image_url = $items['low_resolution']['url']; // going to go through all of my results and give myself back the URL of those pictures because we want to save it in the PHP Server
+		echo '<img src=" '.$image_url.' "/><br/>';
+	}
+}
+
 
 if (isset($_GET['code'])) {
 	$code = ($_GET['code']);
@@ -43,17 +55,23 @@ if (isset($_GET['code'])) {
 		'code' => $code
 		);
 // cURL is what we use in PHP, it's a library calls to other API's
-$cURL = curl_init($url); // setting a cURL session and we put in $url because that's where we are getting the data from.
+$curl = curl_init($url); // setting a cURL session and we put in $url because that's where we are getting the data from.
 curl_setopt($curl, CURLOPT_POST, true);
 curl_setopt($curl, CURLOPT_POSTFIELDS, $access_token_settings); // setting the POSTFIELDS to the array setup that we created.
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); // setting it equal to 1 because we are getting strings back.
 curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // but in live work-production we want to set this to true.
 
+
 $result = curl_exec($curl);
-curl_close();
+curl_close($curl);
 
 $results = json_decode($result, true);
-getUserID($results['user']['username']);
+
+$userName = $results['user']['username'];
+
+$userID = getUserID($userName);
+
+printImages($userID);
 }
 else{
 ?>
